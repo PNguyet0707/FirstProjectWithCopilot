@@ -1,0 +1,6 @@
+@Permission_HostAddress = http://localhost:5294
+
+GET {{Permission_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
