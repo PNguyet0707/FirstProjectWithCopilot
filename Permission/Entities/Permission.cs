@@ -1,8 +1,9 @@
-namespace Permission
+namespace MemeWorld.Entities
 {
     public class Permission
     {
-        public UserType UserType { get; set; }
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public PermissionCategory Category  {get; set;}
         public ActionUnit Action { get; set;}
 

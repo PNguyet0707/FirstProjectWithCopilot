@@ -1,25 +1,57 @@
+using MemeWorld.Data;
+using MemeWorld.Entities;
 using Microsoft.AspNetCore.Mvc;
-namespace Permission.Controllers;
+using Microsoft.EntityFrameworkCore;
+namespace MemeWorld.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class PermissionController : ControllerBase
 {
-    //private readonly ILogger<PermissionController> _logger ;
+    private readonly PermissionContext _permissionContext;
+    public PermissionController(PermissionContext context)
+    {
+        _permissionContext = context;
+    }
 
-    
+    [HttpGet("getpermissionbyId/{id}")]
+    public async Task<IActionResult>GetPermissionById(Guid id)
+    {
+        var permission = await _permissionContext.Permissions.FindAsync(id);
+        if (permission == null)
+        {
+            return NotFound();
+        }
+        return Ok(permission);   
+    }
+
+    [HttpGet("getallpermissions")]
+    public async Task<IActionResult> GetAllPermissions()
+    {
+        var permission = await _permissionContext.Permissions.Where(p => p.Category == (p.Category & PermissionCategory.Cat)).ToListAsync();
+        if (permission == null)
+        {
+            return NotFound();
+        }
+        return Ok(permission);
+    }
 
     [HttpPost("addpermission")]
-    public bool AddPermission()
+    public async Task<ActionResult>AddPermission(Permission request)
     {
-        try
-        {
+       _permissionContext.Permissions.Add(request);
+        await _permissionContext.SaveChangesAsync();
+        return Ok();
+    }
 
-            return true;
-        }
-        catch(Exception ex)
-        {
-            return false;
-        }
+    [HttpDelete("deletepermission/{id}")]
+    public async Task<ActionResult> DeletePermission(Guid id)
+    {
+        var permission =  await _permissionContext.Permissions.FindAsync(id);
+        if (permission == null)
+            return NotFound();
+         _permissionContext.Permissions.Remove(permission);
+        await _permissionContext.SaveChangesAsync();
+        return Ok();
     }
 }
