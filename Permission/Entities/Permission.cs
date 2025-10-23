@@ -6,7 +6,7 @@ namespace MemeWorld.Entities
         public Guid UserId { get; set; }
         public PermissionCategory Category  {get; set;}
         public ActionUnit Action { get; set;}
-
+        public string Description { get; set;}
     }
     [Flags]
     public enum UserType

@@ -28,12 +28,18 @@ public class PermissionController : ControllerBase
     [HttpGet("getallpermissions")]
     public async Task<IActionResult> GetAllPermissions()
     {
-        var permission = await _permissionContext.Permissions.Where(p => p.Category == (p.Category & PermissionCategory.Cat)).ToListAsync();
-        if (permission == null)
+        //var permission = await _permissionContext.Permissions.Where(p => p.Category == (p.Category & PermissionCategory.Cat)).ToListAsync();
+        var permissions = await _permissionContext.Permissions.ToListAsync();
+        var filtedpermission = from per in permissions
+                               where ( (per.Category & PermissionCategory.Cat) == PermissionCategory.Cat
+                               && (per.Action & ActionUnit.React) == ActionUnit.React 
+                               && per.Id == Guid.Parse("AAB8C7E6-CA0D-4D7E-990B-73BA233BF409"))
+                               select per;
+        if (permissions == null)
         {
             return NotFound();
         }
-        return Ok(permission);
+        return Ok(permissions);
     }
 
     [HttpPost("addpermission")]
